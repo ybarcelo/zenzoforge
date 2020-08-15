@@ -1,0 +1,166 @@
+
+  body {
+     margin: 0;
+    height: 100%;
+    padding: 0;
+    background-color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: black;
+    font-family: helvetica;
+  }
+
+  textarea:focus, input:focus{
+      outline: none;
+      border-color: cyan;
+  }
+
+  .icon {
+    float: left;
+    position: relative;
+    top: -14px;
+  }
+
+  .icon img {
+    width: 25px;
+    height: 25px;
+    top: 7px;
+    position: relative;
+  }
+  
+  .sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(180deg, #8678dc, #48dfe1);
+    overflow-x: hidden;
+    padding-top: 20px;
+    font-weight: bold;
+  }
+
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+  }
+
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+
+  .border {
+    padding-top: 10px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: lightgray;
+    border-radius: 250px;
+    padding-bottom: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .redBorder {
+    border-color: red !important;
+  }
+
+  .transparent {
+    opacity: 0.4;
+  }
+
+  .tiny-border {
+    padding-top: 5px;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: lightgray;
+    border-radius: 250px;
+    padding-bottom: 5px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn {
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    border-radius: 25px;
+    width: 25%;
+    min-width: 75px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .address_input {
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    border-radius: 25px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .amount_input {
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    border-radius: 25px;
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 5px;
+    padding-bottom: 4px;
+  }
+
+  .item_border {
+    display: inline-block;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 10px;
+    height:200px;
+    width:160px;
+    background-color: white;
+    text-align:center;
+  }
+
+  .item_border_img {
+    height: 75%;
+    width: 75%;
+    background-color: #dddddd;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .avatar_border {
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 1000px;
+    margin: 10px;
+    height: 100px;
+    width: 100px;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }

@@ -1,0 +1,507 @@
+<!-- 
+=========================================================
+ Light Bootstrap Dashboard - v2.0.1
+=========================================================
+
+ Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard
+ Copyright 2019 Creative Tim (https://www.creative-tim.com)
+ Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard/blob/master/LICENSE)
+
+ Coded by Creative Tim
+
+=========================================================
+
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.  -->
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Zenzo</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="assets/js/sweetalert.min.js"></script>
+        <!--   Core JS Files   -->
+    <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+
+
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!-- CSS Files -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/light-bootstrap-dashboard.css?v=2.0.0 " rel="stylesheet" />
+    <link href="assets/css/forge.css" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="assets/css/demo.css" rel="stylesheet" />
+     <!-- FORGE LIBRARY GOES BELOW -->
+      <script src="./lib/index.js"></script>
+      <!-- FORGE LIBRARY GOES ABOVE -->
+
+    <script src="js/functions.js"></script>
+
+    <script src="./gui/dialog-component.js"></script>
+
+    <script>
+
+                            let isRunningChecks = 0;
+                            let isRunningChecker = setInterval(function(){
+                              if (isForgeRunning) {
+                                $("#loadingscreen").css('display', 'none');
+                                //$("#maintabs").css('display', 'block');
+                                
+                               
+                                clearInterval(isRunningChecker);
+                                 openProfile();
+                                //openWallet();
+                              } else if (isRunningChecks > 5) {
+                                 $("#loadingscreen").css('display', 'none');
+                                 $("#welcome").css('display', 'block');
+                                //document.getElementById("loadingscreen").style.display = "none";
+                                 //document.getElementById("welcome").style.display = "block";
+                              }
+                              isRunningChecks++;
+                            }, 1000);
+                          </script>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+                <div class="container-fluid">
+                     <a href="forge_home.html"> 
+                      <img src="assets/img/logo.png" width="150" height="50">
+                    </a>
+                       
+                    <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                        
+                        <ul class="navbar-nav ml-auto" id="navbar_wallet">
+                            
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-toggle="dropdown" id="available_znz">
+                                   
+                                    
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-toggle="dropdown" id="total_znz">
+                                </a>
+                            </li>
+
+                             <li class="nav-item">
+                                <a href="#" class="nav-link" data-toggle="dropdown" id="locked_znz">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-toggle="dropdown" id="peerCount">
+                                </a>
+                               
+                            </li>
+                             
+                        </ul>
+                       
+                        <ul class="navbar-nav ml-auto">
+                             <li class="nav-item">
+                                <a class="nav-link" href="javascript:showWallet();">
+                                  <i class="nc-icon nc-money-coins"></i>
+
+                                </a>
+                            </li>
+                           
+                           <li class="nav-item">
+                                <a class="nav-link" href="javascript:showProfile();" style="text-decoration: none;">
+                                  <i class="nc-icon nc-single-02"></i>
+
+                                </a>
+                            </li>
+
+                            <!--
+                             <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                  <i class="nc-icon nc-settings-gear-64"></i>
+
+                                </a>
+                            </li>
+                          -->
+
+
+                            
+                        </ul>
+                       
+
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                
+                <div class="container-fluid">
+
+                    <div id="loadingscreen">
+                        
+                          <p id="loadingtext" style="text-align: center;font-family: helvetica;margin-top: 0;padding-top: 25px;opacity: 0.5;">Loading...</p>
+                          
+                    </div>
+
+
+
+                    <div class="row" id="welcome" style="display: none;">
+                        <div class="col-xl-12 col-md-12" >
+                            <p align="center">
+                               <img src="assets/img/ZENZO_Icon_-_Full_Color.svg" width="100" > 
+                            </p>
+                            
+                            
+                            <h2 align="center">WELCOME TO ZFORGE</h2>
+                            <div class="alert alert-secondary" role="alert" style="color:#000000" id="introtext">
+                              Please select how you'd like to setup your wallet. For a frictionless and quick setup, select "Automatic Setup".  If you'd like to mess with some files and dive in the dirt, select "Manual Setup".
+
+                            </div>
+                        </div>
+                         <div class="row">
+                                <div class="col-xl-12 col-md-12" align="center">
+                                    <a href="javascript:manualSetup()" class="btn btn-info btn-lg" role="button" aria-pressed="true">Manual</a>
+                                    <a href="forge_home_automatic.html" class="btn btn-info btn-lg" role="button" aria-pressed="true">Automatic</a>
+                                   
+                                </div>
+                                <script>
+                                    function manualSetup() {
+                                      safeMode = true;
+                                      isForgeRunning = false;
+                                      $("#introtext").html("Step-by-step guide on setting up ZENZO Forge<br><br><b>1. </b> Setup the Forge config, the directory of the config should be:<br><code>" + appdata + 'data/config.json</code><br><br>An example of the Forge config contents can be found below:<br><div style="text-align: left;"><code>{<br>&nbsp;&nbsp;&nbsp;&nbsp;"wallet": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"datadir":"' + appdataZC + '",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"user":"user",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pass":"forgepass",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"port":26211,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"address":"your_znz_address"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>}</code></div><br>Change the "address" field with an address from your ZENZO Core.<br><br><b>2. </b>Setup the ZENZO Core config at the below directory:<br><code>' + appdataZC + 'zenzo.conf</code><br><br>An example of the ZENZO Core config contents can be found below:<br><div style="text-align: left;"><code>txindex=1<br>rpcuser=user<br>rpcpassword=forgepass<br>listen=1<br>server=1</code></div><br><br><b>3. </b>Restart ZENZO Core, wait for it to load, then restart ZENZO Forge.');
+                                    }
+
+                                    function setupForgeGui() {
+                                      setupForge(null).then(done => {
+                                        startForge();
+                                        document.getElementById("introtext").innerHTML = "<b>Setup Complete!</b><br><br>Please restart <b>ZENZO Core</b>.<br>I will automatically connect to it after the restart!";
+                                        let checkDaemonInterval = setInterval(function(){
+                                          isDaemonOnline().then(isOn => {
+                                            if (isOn) {
+                                              if (addy !== null) {
+                                                safeMode = false;
+                                                document.getElementById("welcome").style.display = "none";
+                                                document.getElementById("sidenav").style.display = "block";
+                                                openWallet();
+                                                clearInterval(checkDaemonInterval);
+                                              } else {
+                                                generateForgeAddress();
+                                              }
+                                            }
+                                          })
+                                        }, 2000);
+                                      });
+                                    }
+
+                                    async function isDaemonOnline() {
+                                      try {
+                                        let uptime = await zenzo.call("help");
+                                        return ((uptime.length > 0) ? true : false);
+                                      } catch(e){};
+                                    }
+                                </script>
+                            </div>
+                    </div>
+
+                     <div class="row" id="maintabs" style="display: none;">
+                         <div class="col-xl-12 col-md-12">
+                            <label >Welcome: <span id="user_label"></span></label>
+                             <div class="p-5 rounded shadow mb-5">
+                                 <ul id="myTab" role="tablist" class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav" style="justify-content: center;">
+                                      <li class="nav-item flex-sm-fill">
+                                        <a id="wallet-tab" data-toggle="tab" href="#wallet" role="tab" aria-controls="home" aria-selected="true" class="nav-link border-0 text-uppercase font-weight-bold active">Wallet</a>
+                                      </li>
+                                      <li class="nav-item flex-sm-fill">
+                                        <a id="inventory-tab" data-toggle="tab" href="#inventory" role="tab" aria-controls="profile" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">Inventory</a>
+                                      </li>
+                                      <!--
+                                      <li class="nav-item flex-sm-fill">
+                                        <a id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold">History</a>
+                                      </li>
+                                    -->
+                                </ul>
+                                <div id="myTabContent" class="tab-content">
+                                  <div id="wallet" role="tabpanel" aria-labelledby="wallet-tab" class="tab-pane fade px-4 py-5 show active">
+                                    <div class="row justify-content-center">
+                                                <div class="col-xl-6 col-md-8">
+                                                    <div class="card ">
+                                                        <div class="card-header ">
+                                                            <h4 class="card-title">Receive ZNZ</h4>
+                                                           
+                                                        </div>
+                                                        <div class="card-body ">
+                                                            <input id="receive_address" readonly="readonly" type="text" value="" class="form-control">
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6 col-md-8">
+                                                    <div class="card ">
+                                                        <div class="card-header ">
+                                                            <h4 class="card-title">Send ZNZ</h4>
+                                                           
+                                                        </div>
+                                                        <div class="card-body ">
+                                                            <form>
+                                                                  <div class="form-group">
+                                                                    
+                                                                    <input type="text" class="form-control" id="send_to" aria-describedby="emailHelp" placeholder="ZNZ Address or username" oninput="checkForProfile()">
+
+                                                                   
+                                                                    
+                                                                  </div>
+                                                                  <div class="form-group">
+                                                                    
+                                                                    <input type="number" class="form-control" id="send_amount" placeholder="Amount (ZNZ)" >
+                                                                  </div>
+                                                                 
+                                                                  <button type="button"  id="send_button" class="btn btn-primary" onclick="sendGuiTX()">Send</button>
+                                                                  <div id="sending_to_parent" style="color:black; opacity: 0.5; display:none">
+                                                                     
+                                                                       <img class="avatar border-gray" src="assets/img/default-avatar.png" alt="..." id="sending_avatar">
+                                                                      <p style="margin-bottom: 15px; margin-top: 0px;">Sending to <b id="sending_to"></b></p>
+                                                                    </div>
+                                                                 
+                                                                </form>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                    </div>
+                                           
+                                  </div>
+                                  <div id="inventory" role="tabpanel" aria-labelledby="inventory-tab" class="tab-pane fade px-4 py-5">
+                                    <div class="row">
+                                      <div class="col-xl-12 col-md-12">
+                                          <div class="row" >
+                                             <div id="inventory_search" style="text-align: center; display: none">
+                                                <input class="address_input" placeholder="Search for TX, Name or DApp" id="inventory_search_input" type="text" style="margin-bottom: 8px;">
+                                              </div>
+                                                    <div class="col-xl-12 col-md-12 inventoryContainer" align="center">
+
+                                                        <span id="items"></span>
+                                                      
+                                                     </div>
+                                                     <div id="item_menu" style="display: none; position: absolute; background-color: rgb(106, 106, 106); width: 50%; height: 450px; margin-left: auto; margin-right: auto; margin-top: 50px; top: 0px; right: 15%; color: white; text-align: center; border-radius: 12px; z-index: 0; border-style: solid; border-color: rgb(147, 232, 255); border-width: 5px;">
+                                                          <p onclick="closeItemMenu()" style="position: absolute;top: -10px;right: 10px;cursor: pointer;">x</p>
+                                                          <h3 id="item_menu_name">The Grandmaster Scroll</h3>
+                                                          <div id="item_menu_image">
+                                                            <div class="item_border_img" style="background-image: url('./gui/forge_unknown.png');height: 275px !important;width: 220px !important; border-style: solid;">              
+                                                            </div>
+                                                         </div>
+                                                        <h3 id="item_menu_value">1,000 ZNZ</h3>
+                                                        <button id="item_menu_smelt" class="btn" onclick="smeltForgeItemBtn()">Smelt</button>
+                                                        <button id="item_menu_transfer" style="display: none;" class="btn" onclick="transferForgeItemBtn()">Transfer</button>
+                                                        <div style="
+                                                            width: 3000px;
+                                                            height: 3000px;
+                                                            background-color: black;
+                                                            position: absolute;
+                                                            top: -500px;
+                                                            left: -500px;
+                                                            opacity: 0.75;
+                                                            z-index: -1 !important;">
+                                                        </div>
+                                                      </div>
+                                                </div>
+                                                </br>
+                                                <div class="row">
+                                                    <div class="col-xl-8 col-md-8" style="margin-left: 17%;">
+                                                    <div class="card ">
+                                                        <div class="card-header ">
+                                                            <h4 class="card-title" align="center">Create ZENZO Forge Item (ZFI)</h4>
+                                                           
+                                                        </div>
+                                                    <div class="card-body ">
+                                                        <div align="center" style="color: #000000">
+                                                          <p>Card Preview</p>
+                                                          <div class="item_border" style="margin-top: -5px;">
+                                                            <b id="new_item_preview_name">The Grandma...</b>
+                                                            <div id="new_item_preview_image" style="height: 100%;width: 100%;display: contents;"><div class="item_border_img" style="background-image: url('assets/img/forge_unknown.png');"></div></div>
+                                                            <br/>
+                                                            <b id="new_item_preview_value">15000 ZNZ</b>
+                                                          </div>
+                                                        </div>
+                                                        <div id="card_designer_warning"></div>
+                                                          
+                                                              <div class="form-group">
+                                                                
+                                                                <input class="form-control address_input" placeholder="Name (E.g: The Grandmaster Scroll)" id="new_item_name" type="text">
+                                                                
+                                                              </div>
+
+                                                              <div class="form-group">
+                                                                
+                                                                <input class="form-control address_input" placeholder="Image (E.g: https://i.imgur.com/yQuXuMa.gif)" id="new_item_image" type="text">
+                                                                
+                                                              </div>
+
+                                                              <div class="form-group">
+                                                                
+                                                                <input class="form-control amount_input" style="width: 35% !important;margin-top:5px;" placeholder="ZNZ Value (E.g: 15000)" id="new_item_value" type="number">
+                                                              </div>
+                                                              <div class="form-group" align="center">
+                                                             
+                                                              <button  id="craft_button" class=" btn btn-primary" onclick="craftItem()" >Craft</button>
+                                                               </div>
+                                                          
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+
+                             </div>
+                         </div>
+                     </div>
+                      </div>
+                     
+                      <div class="row" id="profile" style="display: none;">
+                        <div class="col-md-4">
+                            <div class="card card-user">
+                                <div class="card-image">
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="author">
+                                        <a href="#">
+                                            <img class="avatar border-gray" src="assets/img/default-avatar.png" alt="..." id="welcome_avatar">
+                                            <h5 class="title" id="welcome_username">Your username</h5>
+                                        </a>
+                                        <p class="description">
+                                           <!--Here goes the name. today only we use username--> 
+                                        </p>
+                                    </div>
+                                    <p class="description text-center">
+                                        <!--Here goes the description. about you field.e--> 
+                                    </p>
+                                </div>
+                                <hr>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    <h3 class="card-title">Create a ZENZO Profile</h3>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">¿What is ZENZO Profile?</h4>
+                                    <p class="card-text">A ZENZO Profile is a decentralized ZFI (ZENZO Forge Item) that allocates a custom, human-readable username to a ZENZO address.</p>
+                                    <p>(Creating a profile will 'lock' 10 ZNZ)</p>
+                                        <div class="row">
+                                            
+                                            <div class="col-md-4 px-3">
+                                                <div class="form-group">
+                                                  <div id="profile_designer_warning"></div>
+                                                    <label>Username</label>
+                                                    <input type="text" id="new_username" class="form-control" placeholder="Username" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 pl-1">
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Image</label>
+                                                    <input  id="new_avatar" type="text" class="form-control" placeholder="Image (E.g: https://i.imgur.com/yQuXuMa.gif)" >
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <button class="btn btn-info btn-fill " onclick="javascript:showWallet()" style="display: none;" id="btn_inventory">Go to inventory</button>
+                                        <button class="btn btn-info btn-fill pull-right" onclick="createUsername()">Create Profile</button>
+                                        <div class="clearfix"></div>
+                                        <script>
+                                                let user_profile = null;
+
+                                                async function createUsername() {
+                                                  const newUsername =  $("#new_username").val();
+                                                  const newAvatar = $("#new_avatar").val();
+
+                                                  if(newUsername=="" || newAvatar==""){
+                                                         swal({
+                                                                      title: "Zenzo Forge",
+                                                                      text: "Fields are required",
+                                                                      icon: "warning",
+                                                                    });
+                                                  }else{
+                                                  
+                                                  
+                                                              let isUsernameFree = getProfile(newUsername, true);
+                                                              if (isUsernameFree === null) {
+                                                                try {
+                                                                  let createdUser = await superagent
+                                                                    .post("http://127.0.0.1:" + forgePort + "/forge/create")
+                                                                    .send({name: "zenzo." + newUsername, image: newAvatar, amount: 10, auth: authToken});
+                                                                  user_profile = createdUser.body;
+                                                                   swal({
+                                                                      title: "Zenzo Forge",
+                                                                      text: "welcome "+user_profile.name,
+                                                                      icon: "success",
+                                                                    });
+                                                                   loadProfile();
+
+                                                                  //openProfile();
+                                                                } catch (e) {
+                                                                     // setWarning("profile_designer_warning", "Profile creation failure...");
+                                                                      console.error("Profile creation error: " + e);
+                                                                          swal({
+                                                                          title: "Zenzo Forge",
+                                                                          text: "Profile creation failure: " + e,
+                                                                          icon: "error",
+                                                                        });
+                                                                    }
+                                                              } else {
+                                                                    console.warn("Profile creation rejected, username already taken");
+                                                                    
+                                                                    swal({
+                                                                      title: "Zenzo Forge",
+                                                                      text: "Profile creation rejected, username already taken",
+                                                                      icon: "warning",
+                                                                    });
+                                                                  }
+                                                              
+                                                            }
+                                                    }
+                                              </script>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                     
+                    </div>
+
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+ 
+</body>
+
+<script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+<script src="assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+
+
+
+
+
+</html>

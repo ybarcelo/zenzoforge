@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ZENZO Forge</title>
+  </head>
+ <link href="css/forge.css" rel="stylesheet" media="all">
+
+  <body>
+
+    <script src="./gui/dialog-component.js"></script>
+
+    <div id="sidenav" class="sidenav" style="display: none;">
+      <a onclick="openProfile();" style="cursor: pointer;">Profile</a>
+      <a onclick="openWallet();" style="cursor: pointer;">Wallet</a>
+      <a onclick="openInventory();" style="cursor: pointer;">Inventory</a>
+    </div>
+
+    <script>
+      function openWallet() {
+        loadProfile().then(hasProfile => {
+          console.info(hasProfile)
+          if (hasProfile) {
+            document.getElementById("wallet").style.display = "block";
+            document.getElementById("inventory").style.display = "none";
+            document.getElementById("new_profile").style.display = "none";
+            document.getElementById("profile").style.display = "none";
+          } else {
+            
+            document.getElementById("new_profile").style.display = "block";
+ 
+          }
+        })
+
+        
+      }
+
+      function openInventory() {
+        document.getElementById("wallet").style.display = "none";
+        document.getElementById("inventory").style.display = "block";
+        document.getElementById("new_profile").style.display = "none";
+        document.getElementById("profile").style.display = "none";
+      }
+
+      function openProfile() {
+        loadProfile().then(hasProfile => {
+          console.info(hasProfile)
+          if (hasProfile) {
+            document.getElementById("wallet").style.display = "none";
+            document.getElementById("inventory").style.display = "none";
+            document.getElementById("new_profile").style.display = "none";
+            document.getElementById("profile").style.display = "block";
+          } else {
+            document.getElementById("wallet").style.display = "none";
+            document.getElementById("inventory").style.display = "none";
+            document.getElementById("new_profile").style.display = "block";
+            document.getElementById("profile").style.display = "none";
+          }
+        })
+      }
+    </script>
+
+ <!-- Fontfaces CSS-->
+    <link href="css/font-face.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
+    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="css/theme.css" rel="stylesheet" media="all">
+
+
+    <div id="loadingscreen">
+      <h2 style="text-align: center;font-family: helvetica;margin-top: 0;padding-top: 25px;">Welcome to ZENZO Forge</h2>
+      <p id="loadingtext" style="text-align: center;font-family: helvetica;margin-top: 0;padding-top: 25px;opacity: 0.5;">Loading...</p>
+      <script>
+        let isRunningChecks = 0;
+        let isRunningChecker = setInterval(function(){
+          if (isForgeRunning) {
+            document.getElementById("loadingscreen").style.display = "none";
+            document.getElementById("sidenav").style.display = "block";
+            clearInterval(isRunningChecker);
+            openWallet();
+          } else if (isRunningChecks > 5) {
+            document.getElementById("loadingscreen").style.display = "none";
+            document.getElementById("welcome").style.display = "block";
+          }
+          isRunningChecks++;
+        }, 1000);
+      </script>
+    </div>
+
+    <div id="welcome" style="display: none;">
+      <h2 style="text-align: center;font-family: helvetica;margin-top: 0;padding-top: 25px;">Welcome to ZENZO Forge</h2>
+      <p id="introtext" style="
+        margin-left: 100px;
+        margin-right: 100px;
+        text-align: center;">
+        Please select how you'd like to setup your wallet. For a frictionless and quick setup, select "Automatic Setup".
+        <br>
+        <br>
+        If you'd like to mess with some files and dive in the dirt, select "Manual Setup".
+      <input class="btn" type="button" value="Manual Setup" onclick="manualSetup()">
+      <input class="btn" type="button" value="Automatic Setup" onclick="setupForgeGui()">
+      </p>
+
+      <script>
+        function manualSetup() {
+          safeMode = true;
+          isForgeRunning = false;
+          document.getElementById("introtext").innerHTML = "Step-by-step guide on setting up ZENZO Forge<br><br><b>1. </b> Setup the Forge config, the directory of the config should be:<br><code>" + appdata + 'data/config.json</code><br><br>An example of the Forge config contents can be found below:<br><div style="text-align: left;"><code>{<br>&nbsp;&nbsp;&nbsp;&nbsp;"wallet": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"datadir":"' + appdataZC + '",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"user":"user",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pass":"forgepass",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"port":26211,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"address":"your_znz_address"<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>}</code></div><br>Change the "address" field with an address from your ZENZO Core.<br><br><b>2. </b>Setup the ZENZO Core config at the below directory:<br><code>' + appdataZC + 'zenzo.conf</code><br><br>An example of the ZENZO Core config contents can be found below:<br><div style="text-align: left;"><code>txindex=1<br>rpcuser=user<br>rpcpassword=forgepass<br>listen=1<br>server=1</code></div><br><br><b>3. </b>Restart ZENZO Core, wait for it to load, then restart ZENZO Forge.';
+        }
+
+        function setupForgeGui() {
+          setupForge(null).then(done => {
+            startForge();
+            document.getElementById("introtext").innerHTML = "<b>Setup Complete!</b><br><br>Please restart <b>ZENZO Core</b>.<br>I will automatically connect to it after the restart!";
+            let checkDaemonInterval = setInterval(function(){
+              isDaemonOnline().then(isOn => {
+                if (isOn) {
+                  if (addy !== null) {
+                    safeMode = false;
+                    document.getElementById("welcome").style.display = "none";
+                    document.getElementById("sidenav").style.display = "block";
+                    openWallet();
+                    clearInterval(checkDaemonInterval);
+                  } else {
+                    generateForgeAddress();
+                  }
+                }
+              })
+            }, 2000);
+          });
+        }
+
+        async function isDaemonOnline() {
+          try {
+            let uptime = await zenzo.call("help");
+            return ((uptime.length > 0) ? true : false);
+          } catch(e){};
+        }
+      </script>
+    </div>
+    
+    <div id="inventory" style="
+      height: 100vh;
+      background-color: white;
+      margin-left: 160px;
+      display: none;">
+
+      <h1 class="border" style="text-align: center;font-family: helvetica;margin-top: 0;margin-top: 25px;">ZENZO Forge Inventory</h1>
+      <br>
+      <div id="inventory_search" style="text-align: center; display: none">
+        <input class="address_input" placeholder="Search for TX, Name or DApp" id="inventory_search_input" type="text" style="margin-bottom: 8px;">
+      </div>
+      <div style="width: 100%; min-height: 35%; max-height: 62%; overflow-x: hidden; overflow-y: scroll; background-color: #e2e2e2;">
+        <span id="items"></span>
+      </div>
+      <div id="item_menu" style="display: none; position: absolute; background-color: rgb(106, 106, 106); width: 50%; height: 450px; margin-left: auto; margin-right: auto; margin-top: 50px; top: 0px; right: 15%; color: white; text-align: center; border-radius: 12px; z-index: 0; border-style: solid; border-color: rgb(147, 232, 255); border-width: 5px;">
+          <p onclick="closeItemMenu()" style="position: absolute;top: -10px;right: 10px;cursor: pointer;">x</p>
+          <h3 id="item_menu_name">The Grandmaster Scroll</h3>
+          <div id="item_menu_image">
+            <div class="item_border_img" style="background-image: url('./gui/forge_unknown.png');height: 275px !important;width: 220px !important; border-style: solid;">              
+            </div>
+         </div>
+        <h3 id="item_menu_value">1,000 ZNZ</h3>
+        <button id="item_menu_smelt" class="btn" onclick="smeltForgeItemBtn()">Smelt</button>
+        <button id="item_menu_transfer" style="display: none;" class="btn" onclick="transferForgeItemBtn()">Transfer</button>
+        <div style="
+            width: 3000px;
+            height: 3000px;
+            background-color: black;
+            position: absolute;
+            top: -500px;
+            left: -500px;
+            opacity: 0.75;
+            z-index: -1 !important;">
+        </div>
+      </div>
+      <script>
+        let selectedItem = null;
+        function openItemMenu(tx) {
+          let thisItem = getItem(tx);
+          document.getElementById("item_menu_name").innerHTML = thisItem.name;
+          document.getElementById("item_menu_value").innerHTML = thisItem.value + " ZNZ";
+          document.getElementById("item_menu_image").innerHTML = '<div class="item_border_img" style="background-image: url(' + (thisItem.image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + thisItem.image + '\'') + ');height: 275px !important;width: 220px !important; border-style: solid;"></div>';
+          selectedItem = thisItem;
+          document.getElementById("item_menu").style.display = "block";
+        }
+        function closeItemMenu() {
+          document.getElementById("item_menu").style.display = "none";
+        }
+        function smeltForgeItemBtn() {
+          let confirm = new ConfirmClass();
+          confirm.show({
+            title: 'Confirm Smelt',
+            content: 'Are you sure you want to smelt "' + selectedItem.name + '"? Once smelted, this item will be destroyed forever and you will receive a total of ' + selectedItem.value + ' ZNZ',
+            btns: [{
+              text: "Confirm",
+              callback: function(){
+                console.log('Clicked Confirm Button');
+                smeltForgeItem(selectedItem.tx);
+              }
+            }, {
+              text: 'Cancel',
+              callback: function(){
+                console.log('Clicked Cancel Button');
+              }
+            }]
+          })
+        }
+        function transferForgeItemBtn() {
+          let confirm = new ConfirmClass();
+          confirm.show({
+            title: 'Confirm Transfer',
+            content: 'Are you sure you want to send "' + selectedItem.name + '" to ' + (currentValidReceiverName === '' ? '"' + currentValidReceiver + '"' : '"' + currentValidReceiverName + '"') + '?',
+            btns: [{
+              text: "Confirm",
+              callback: function(){
+                console.log('Clicked Confirm Button');
+                transferForgeItem(selectedItem.tx);
+              }
+            }, {
+              text: 'Cancel',
+              callback: function(){
+                console.log('Clicked Cancel Button');
+              }
+            }]
+          })
+        }
+      </script>
+      <div style="text-align: center;margin-top: 25px;">
+        <h2>Create ZENZO Forge Item (ZFI)</h2>
+        <div id="new_item_preview">
+          <p>Card Preview</p>
+          <div class="item_border" style="margin-top: -5px;">
+            <b id="new_item_preview_name">The Grandma...</b>
+            <div id="new_item_preview_image" style="height: 100%;width: 100%;display: contents;"><div class="item_border_img" style="background-image: url('./gui/forge_unknown.png');"></div></div>
+            <b id="new_item_preview_value">15000 ZNZ</b>
+          </div>
+          <br>
+          <div id="card_designer_warning"></div>
+          <input class="address_input" placeholder="Name (E.g: The Grandmaster Scroll)" id="new_item_name" type="text">
+          <br>
+          <input class="address_input" placeholder="Image (E.g: https://i.imgur.com/yQuXuMa.gif)" id="new_item_image" type="text" style="margin-top: 5px;">
+          <br>
+          <input class="amount_input" style="width: 35% !important;margin-top:5px;" placeholder="ZNZ Value (E.g: 15000)" id="new_item_value" type="number">
+          <br>
+          <input id="craft_button" style="opacity:0.4;margin-top: 5px;margin-bottom: 15px;" class="btn" type="button" value="Craft" onclick="craftItem()">
+        </div>
+      </div>
+
+      <!-- FORGE LIBRARY GOES BELOW -->
+      <script src="./lib/index.js"></script>
+      <!-- FORGE LIBRARY GOES ABOVE -->
+
+      <script>
+          let itemCount = 0;
+          let availableBalance = 0;
+          let isWalletLocked = false;
+          let canCraftItem = false;
+          let canSendTransaction = false;
+
+
+          let hasValidReceiver = false;
+          let currentValidReceiver = "";
+          let currentValidReceiverName = "";
+          let currentInventorySearch = "";
+          function craftItem() {
+            if (peers.length === 0 || !canCraftItem) return;
+            let nName = document.getElementById("new_item_name").value;
+            let nImage = document.getElementById("new_item_image").value;
+            let nValue = Number(document.getElementById("new_item_value").value);
+
+            if (nImage === "") {
+              nImage = "default";
+            }
+
+            let confirm = new ConfirmClass();
+            confirm.show({
+              title: 'Confirm Craft',
+              content: 'Are you sure you want to craft "' + nName + '"? Once crafted this item will arrive in your inventory and a total of ' + (nValue) + ' ZNZ will be locked (Minus 0.001 fee)',
+              btns: [{
+                text: "Confirm",
+                callback: function(){
+                  console.log('Clicked Confirm Button');
+                  craftForgeItem(nName, nImage, nValue);
+                }
+              }, {
+                text: 'Cancel',
+                callback: function(){
+                  console.log('Clicked Cancel Button');
+                }
+              }]
+            })
+          }
+
+          function craftForgeItem (name, image, value) {
+              superagent
+              .post('http://127.0.0.1:' + forgePort + '/forge/create')
+              .send({ name: name, image: image, amount: value, auth: authToken})
+              .end((err, res) => {
+                console.info(res);
+                refreshInventory();
+              });
+          }
+
+          function smeltForgeItem (tx) {
+            let nItem = getItem(tx);
+            zenzo.call("signmessage", addy, "smelt_" + nItem.tx).then(sig => {
+              smeltItem({tx: tx, address: nItem.address}, sig).then(a => {closeItemMenu()});
+            });
+          }
+
+          function transferForgeItem (item) {
+              superagent
+              .post('http://127.0.0.1:' + forgePort + '/forge/transfer')
+              .send({ item: item, to: currentValidReceiver, auth: authToken})
+              .end((err, res) => {
+                closeItemMenu()
+                console.info(res);
+                refreshInventory();
+              });
+          }
+
+          async function getForgeInventory (addr) {
+              let inv = {items: [], pendingItems: [], unsignedItems: []};
+              let res = await superagent.post('http://127.0.0.1:' + forgePort + '/forge/items');
+              res = JSON.parse(res.text);
+              for (let i=0; i<res.items.length; i++) {
+                if (res.items[i] && res.items[i].address === addr && !res.items[i].name.startsWith("zenzo.")) inv.items.push(res.items[i]);
+              }
+              for (let i=0; i<res.pendingItems.length; i++) {
+                if (res.pendingItems[i] && res.pendingItems[i].address === addr && !res.pendingItems[i].name.startsWith("zenzo.")) inv.pendingItems.push(res.pendingItems[i]);
+              }
+              for (let i=0; i<res.pendingItems.length; i++) {
+                if (res.unsignedItems[i] && res.unsignedItems[i].address === addr && !res.unsignedItems[i].name.startsWith("zenzo.")) inv.unsignedItems.push(res.unsignedItems[i]);
+              }
+              return inv;
+          }
+
+          function refreshInventory() {
+            getForgeInventory(addy).then(inv => {
+              itemCount = 0;
+              let itemHTML = "<br>";
+              for (let i=0; i<inv.items.length; i++) {
+                if (matchesInventorySearch(inv.items[i].tx) || matchesInventorySearch(inv.items[i].name)) inv.items[i].html = '<div onclick="openItemMenu(\'' + inv.items[i].tx + '\')" class="item_border">' + truncateWithEllipses(inv.items[i].name, 12) + '<div id="image" class="item_border_img" style="background-image: url(' + (inv.items[i].image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + inv.items[i].image + '\'') + ');"></div><div class="icon" style="width: 160px;"><img src="./gui/znz.svg"> ' + Number(inv.items[i].value.toFixed(2)).toPrecision() + ' ZNZ</div></div>';
+              }
+              for (let i=0; i<inv.pendingItems.length; i++) {
+                if (matchesInventorySearch(inv.pendingItems[i].tx) || matchesInventorySearch(inv.pendingItems[i].name)) inv.pendingItems[i].html = '<div class="item_border" style="opacity: 0.5 !important; cursor:initial;">' + truncateWithEllipses(inv.pendingItems[i].name, 12) + '<div id="image" class="item_border_img" style="background-image: url(' + (inv.pendingItems[i].image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + inv.pendingItems[i].image + '\'') + ');"></div><div class="icon" style="width: 160px;"><img src="./gui/znz.svg"> ' + Number(inv.pendingItems[i].value.toFixed(2)).toPrecision() + ' ZNZ</div>';
+              }
+              for (let i=0; i<inv.unsignedItems.length; i++) {
+                if (matchesInventorySearch(inv.unsignedItems[i].tx) || matchesInventorySearch(inv.unsignedItems[i].name)) inv.unsignedItems[i].html = '<div class="item_border" style="opacity: 0.5 !important; cursor:initial;">' + truncateWithEllipses(inv.unsignedItems[i].name, 12) + '<div id="image" class="item_border_img" style="background-image: url(' + (inv.unsignedItems[i].image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + inv.unsignedItems[i].image + '\'') + ');"></div><div class="icon" style="width: 160px;"><img src="./gui/znz.svg"> ' + Number(inv.unsignedItems[i].value.toFixed(2)).toPrecision() + ' ZNZ</div>';
+              }
+
+              let sortedItems = inv.items.concat(inv.pendingItems, inv.unsignedItems);
+              sortedItems.sort(function(a, b){return b.value-a.value});
+
+              for (let i=0; i<sortedItems.length; i++) {
+                if (!_.isNil(sortedItems[i].html))
+                  itemHTML += sortedItems[i].html;
+                itemCount++;
+              }
+              document.getElementById("items").innerHTML = itemHTML;
+            });
+          }
+
+          function matchesInventorySearch(i) {
+            if (i.toLowerCase().includes(currentInventorySearch) || currentInventorySearch === "") return true;
+            return false;
+          }
+
+
+          setInterval(function() {
+            // Update peer UI
+            if (safeMode) return setWarning("peerCount", "Offline (Missing RPC Connection)<br>Please start ZENZO Core, then restart the Forge.");
+            if (peers.length === 0) {
+              setWarning("peerCount", "Offline (No peers connected)");
+            } else {
+              document.getElementById("peerCount").innerHTML = peers.length;
+              refreshInventory();
+            }
+
+            // Update wallet "Send" UI
+            if (!canSendTransaction) {
+              document.getElementById("send_button").style.opacity = 0.4;
+            } else {
+              document.getElementById("send_button").style.opacity = 1;
+            }
+
+            // Update selected card UI
+            if (selectedItem && hasValidReceiver) {
+              document.getElementById("item_menu_transfer").style.display = "";
+            } else {
+              document.getElementById("item_menu_transfer").style.display = "none";
+            }
+
+            // Update card designer
+            let itemName = document.getElementById("new_item_name");
+            let itemImage = document.getElementById("new_item_image");
+            let itemValue = Number(document.getElementById("new_item_value").value);
+            canCraftItem = false;
+            if (itemName.value.length >= 1 || itemImage.value.length >= 1 || itemValue > 0) {
+              document.getElementById("new_item_preview_name").innerHTML = (itemName.value.length >= 1 ? truncateWithEllipses(itemName.value, 12) : "The Grandma...");
+              document.getElementById("new_item_preview_value").innerHTML = (itemValue > 0 ? itemValue : "0") + " ZNZ";
+
+              if (isWalletLocked) setWarning("card_designer_warning", "Wallet must be unlocked for crafting!", true);
+              else if (itemName.value.length < 1 || itemName.value.length > 50) {
+                setWarning("card_designer_warning", "Name must be between 1 and 50 chars", true);
+                setRedBorder("new_item_name");
+              }
+              else if (itemImage.value.length !== 0 && itemImage.value.length < 10 || itemImage.value.length !== 0 && itemImage.value.length > 150) {
+                setClearBorder("new_item_name");
+                setWarning("card_designer_warning", "Image URL must be between 10 and 150 chars", true);
+                setRedBorder("new_item_image");
+              }
+              else if (itemValue < 0.01) {
+                setClearBorder("new_item_name");
+                setClearBorder("new_item_image");
+                setWarning("card_designer_warning", "Value must be atleast 0.01 ZNZ", true);
+                setRedBorder("new_item_value");
+              }
+              else {
+                setClearBorder("new_item_name");
+                setClearBorder("new_item_image");
+                setClearBorder("new_item_value");
+                setText("card_designer_warning", "");
+                canCraftItem = true;
+              }
+
+              if (!canCraftItem) {
+                document.getElementById("craft_button").style.opacity = 0.4;
+              } else {
+                document.getElementById("craft_button").style.opacity = 1;
+              }
+
+              if (itemImage.value.length > 1) {
+                document.getElementById("new_item_preview_image").innerHTML = '<div class="item_border_img" style="background-image: url(\'' + itemImage.value + '\');"></div>';
+              } else {
+                document.getElementById("new_item_preview_image").innerHTML = '<div class="item_border_img" style="background-image: url(\'./gui/forge_unknown.png\');"></div>';
+              }
+            } else {
+              document.getElementById("new_item_preview_name").innerHTML = "The Grandma...";
+              document.getElementById("new_item_preview_image").innerHTML = '<div class="item_border_img" style="background-image: url(\'./gui/forge_unknown.png\');"></div>';
+              document.getElementById("new_item_preview_value").innerHTML = "15000 ZNZ";
+            }
+
+            // Update profile designer (If no profile is loaded into mem)
+            if (!user_profile) {
+              let profileName = document.getElementById("new_username");
+              let profileImage = document.getElementById("new_avatar");
+              if (profileName.value.length >= 1)
+                document.getElementById("new_profile_name").innerHTML = profileName.value;
+              else
+                document.getElementById("new_profile_name").innerHTML = "Zentoshi Zakamoto";
+              
+              if (profileImage.value.length >= 10 && profileImage.value.length <= 150)
+                document.getElementById("new_profile_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(\'' + profileImage.value + '\'); margin-left: auto; margin-right: auto;"></div>';
+              else
+                document.getElementById("new_profile_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(\'./gui/forge_unknown.png\'); margin-left: auto; margin-right: auto;"></div>';
+
+              if (isWalletLocked) setWarning("profile_designer_warning", "Wallet must be unlocked for crafting!", true);
+              else if (availableBalance <= 10) setWarning("profile_designer_warning", "A minimum of >10 ZNZ is required to create a profile!", true);
+              else if (profileName.value.length < 1 || profileName.value.length > 50) setWarning("profile_designer_warning", "Name must be between 1 and 50 chars", true);
+              else if (profileImage.value.length < 10 || profileImage.value.length > 150) setWarning("profile_designer_warning", "Avatar URL must be between 10 and 150 chars", true);
+              else if (getProfile(profileName.value, true)) setWarning("profile_designer_warning", "Username already exists!", true);
+              else setText("profile_designer_warning", "");
+            }
+
+            // Update inventory search
+            if (itemCount > 6) {
+              document.getElementById("inventory_search").style.display = "";
+              if (document.getElementById("inventory_search_input").value.length >= 1)
+                currentInventorySearch = document.getElementById("inventory_search_input").value.toLowerCase();
+              else
+                currentInventorySearch = "";
+            } else {
+              document.getElementById("inventory_search").style.display = "none";
+            }
+          }, 500);
+
+          refreshInventory();
+      </script>
+    </div>
+    <div id="wallet" style="height: 80vh; background-color: white; margin-left: 160px; display: none; text-align: center;">
+      <div style="width: 100%;">
+        <h1 class="border" style="text-align: center;font-family: helvetica;">ZENZO Wallet</h1>
+      </div>
+      <div id="welcome_avatar" class="overview-item overview-item--c1"> 
+         <div class="image img-cir img-120"style="background-image: url('./gui/forge_unknown.png'); margin-left: auto; margin-right: auto;">
+           
+         </div>
+         <h3>Welcome, <b id="welcome_username"></b></h3>
+      </div>
+      
+
+      <script>
+        async function loadProfile () {
+          let userTmp = getProfile(addy, true);
+          if (userTmp !== null) {
+            user_profile = userTmp;
+            document.getElementById("welcome_username").innerHTML = user_profile.name.replace("zenzo.", "");
+            document.getElementById("welcome_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(' + (user_profile.image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + user_profile.image + '\'') + '); margin-left: auto; margin-right: auto;"></div>';
+            return true;
+          } else {
+            return false;
+          }
+        }
+
+        function truncateWithEllipses(text, max) {
+            return text.substr(0,max-1)+(text.length>max?'&hellip;':''); 
+        }
+
+        function setWarning(element, text, showImage = false) {
+          document.getElementById(element).innerHTML = ((showImage) ? '<img src="./gui/warning.svg" style="width: 66px;height: 66px;position: relative; top: 10px;">' : '') + '<p style="text-align: center;' + ((!_.isNil(text)) ? '' : 'display: none;') + '"><b style="color: red;">' + text + '</b></p>';
+        }
+
+        function setRedBorder(element) {
+          if (!document.getElementById(element).classList.contains("redBorder")) {
+            document.getElementById(element).classList.add("redBorder");
+          }
+        }
+
+        function setClearBorder(element) {
+          if (document.getElementById(element).classList.contains("redBorder")) {
+            document.getElementById(element).classList.remove("redBorder");
+          }
+        }
+
+        function setText(element, text) {
+          document.getElementById(element).innerHTML = '<p style="text-align: center;' + ((!_.isNil(text)) ? '' : 'display: none;') + '">' + text + '</p>';
+        }
+      </script>
+      <p style="text-align: center;font-family: helvetica;">Peers: <b id="peerCount">Offline (No peers connected)</b></p>
+      <div class="tiny-border" style="margin-top: 0;background-color: #eaeaea;">
+        <h3 style="margin-top: 0;margin-bottom:0;">Available Balance: <b id="available_znz">0</b></h3>
+      </div>
+      <div class="tiny-border" style="margin-top: 15px;opacity: 0.6;">
+        <h3 style="margin-top: 0;margin-bottom:0;">Total Balance: <b id="total_znz">0</b></h3>
+        <h3 style="margin-top: 0;margin-bottom:0;">Locked Balance: <b id="locked_znz">0</b></h3>
+      </div>
+      <br>
+      
+      <h2 class="border" style="margin-top: 15px;">Receive ZNZ</h2>
+      <input id="receive_address" readonly="readonly" type="text" value="" style="text-align: center; width: 315px; border-style: none; background-color: #8678dc4a; border-radius: 1000px;"><br>
+
+      <br><h2 class="border" style="margin-top: 15px;">Send ZNZ</h2>
+      <input class="address_input" id="send_to" oninput="checkForProfile()" type="text" placeholder="ZNZ Address or Username">
+      <input class="amount_input" id="send_amount" type="number" placeholder="Amount (ZNZ)">
+      <br><br>
+      <input id="send_button" class="btn" type="button" value="Send" style="opacity: 0.4;" onclick="sendGuiTX()"></input>
+      <br>
+      <div id="sending_to_parent" style="color:black; opacity: 0.5; display:none">
+        <div id="sending_avatar">
+          <div class="avatar_border" style="background-image: url('./gui/forge_unknown.png'); height: 50px; width: 50px; display: inline-block; border-width: 1px; margin: 0px; margin-top: 20px;"></div>
+        </div>
+        <p style="margin-bottom: 15px; margin-top: 0px;">Sending to <b id="sending_to"></b></p>
+      </div>
+      <script>
+        function fetchBalances() {
+          document.getElementById("receive_address").value = addy;
+          zenzo.call("getwalletinfo").then(RPCbalances => {
+            document.getElementById("total_znz").innerHTML = Number(RPCbalances.balance.toFixed(2)).toLocaleString();
+            let lockedBalance = 0;
+            for (let i=0; i<items.length; i++) {
+                if (items[i].address === addy) lockedBalance += items[i].value;
+            }
+            for (let i=0; i<itemsToValidate.length; i++) {
+                if (itemsToValidate[i].address === addy) lockedBalance += itemsToValidate[i].value;
+            }
+            lockedBalance = formatNum(lockedBalance);
+            availableBalance = formatNum(RPCbalances.balance - lockedBalance);
+            document.getElementById("available_znz").innerHTML = Number(availableBalance.toFixed(2)).toLocaleString();
+            document.getElementById("locked_znz").innerHTML = Number(lockedBalance.toFixed(2)).toLocaleString();
+
+            // Also update unlocked status
+            zenzo.call("getstakingstatus").then(RPCLocked => {
+              isWalletLocked = !RPCLocked.walletunlocked;
+            });
+          });
+        }
+
+        function sendGuiTX() {
+          if (!canSendTransaction) return;
+          const amt = Number(document.getElementById("send_amount").value);
+          const to = document.getElementById("send_to").value;
+
+          let toAddress;
+          let toUsername = "";
+
+          let isUsername = false;
+          if (to.length !== 34) {
+            let toUser = getProfile(to, true);
+            if (toUser !== null) {
+              toAddress = toUser.address;
+              toUsername = toUser.name.replace("zenzo.", "");
+              isUsername = true;
+            } else {
+              // No address, no username; error out
+            }
+          } else {
+            toAddress = to;
+          }
+
+          let confirm = new ConfirmClass();
+          confirm.show({
+            title: 'Confirm Transaction',
+            content: 'Are you sure you want to send ' + amt.toLocaleString() + ' ZNZ to ' + (toUsername === '' ? '"' + toAddress + '"' : '"' + toUsername + '"') + '?',
+            btns: [{
+              text: "Confirm",
+              callback: function(){
+                console.log('Clicked Confirm Button');
+                zenzo.call("sendtoaddress", toAddress, amt).then(guiTx => {
+                  console.info("GUI: Transaction sent! " + guiTx);
+                  fetchBalances();
+                }).catch(console.error);
+              }
+            }, {
+              text: 'Cancel',
+              callback: function(){
+                console.log('Clicked Cancel Button');
+              }
+            }]
+          })
+        }
+
+        function checkForProfile () {
+          // Only check for a profile if we know we're unlocked
+          if (isWalletLocked) {
+            canSendTransaction = false;
+            setWarning("sending_to", "Wallet must be unlocked to transact!");
+            document.getElementById("sending_to_parent").style.display = "block";
+            document.getElementById("sending_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(\'./gui/forge_unknown.png\'); height: 50px; width: 50px; display: inline-block; border-width: 1px; margin: 0px; margin-top: 20px;"></div>';
+            return;
+          }
+
+          console.info("Checking for profile...");
+          const to = document.getElementById("send_to").value;
+
+          let toAddress;
+          let toUsername;
+
+          let isUsername = false;
+          if (to.length !== 34) {
+            let toUser = getProfile(to, true);
+            if (toUser !== null) {
+              toAddress = toUser.address;
+              toUsername = toUser.name.replace("zenzo.", "");
+              isUsername = true;
+              document.getElementById("sending_to").innerHTML = toAddress;
+              document.getElementById("sending_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(' + (toUser.image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + toUser.image + '\'') + '); height: 50px; width: 50px; display: inline-block; border-width: 1px; margin: 0px; margin-top: 20px;"></div>';
+              document.getElementById("sending_to_parent").style.display = "block";
+              hasValidReceiver = true;
+              currentValidReceiverName = toUsername;
+              canSendTransaction = true;
+              console.info("Found username: " + toUsername);
+            } else {
+              setWarning("sending_to", "Invalid Address or Username!");
+              if (to.length > 0)
+                document.getElementById("sending_to_parent").style.display = "block";
+              else
+                document.getElementById("sending_to_parent").style.display = "none";
+              hasValidReceiver = false;
+              currentValidReceiverName = "";
+              canSendTransaction = false;
+              console.info("Couldn't find user or address");
+              document.getElementById("sending_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(\'./gui/forge_unknown.png\'); height: 50px; width: 50px; display: inline-block; border-width: 1px; margin: 0px; margin-top: 20px;"></div>';
+            }
+          } else {
+            let toUser = getProfile(to, true);
+            if (toUser !== null) {
+              toAddress = toUser.address;
+              toUsername = toUser.name.replace("zenzo.", "");
+              isUsername = true;
+              document.getElementById("sending_to").innerHTML = toUsername;
+              document.getElementById("sending_avatar").innerHTML = '<div class="avatar_border" style="background-image: url(' + (toUser.image === "default" ? '\'./gui/forge_unknown.png\'' : '\'' + toUser.image + '\'') + '); height: 50px; width: 50px; display: inline-block; border-width: 1px; margin: 0px; margin-top: 20px;"></div>';
+              document.getElementById("sending_to_parent").style.display = "block";
+              hasValidReceiver = true;
+              currentValidReceiverName = toUsername;
+              canSendTransaction = true;
+              console.info("Found username: " + toUsername);
+            } else {
+              document.getElementById("sending_to").innerHTML = to;
+              document.getElementById("sending_to_parent").style.display = "block";
+              hasValidReceiver = true;
+              currentValidReceiverName = "";
+              canSendTransaction = true;
+              console.info("Regular address");
+            }
+          }
+          currentValidReceiver = toAddress;
+        }
+
+        setInterval(fetchBalances, 1000);
+      </script>
+    </div>
+    <div id="new_profile" style="height: 100vh; background-color: white; margin-left: 160px; display: none; text-align: center;">
+      <h1 class="border" style="text-align: center;font-family: helvetica;margin-top: 0;margin-top: 25px;">Create a ZENZO Profile</h1>
+      <h3 style="text-align: center;font-family: helvetica;margin-top: 0;padding-top: 25px;">What is a ZENZO Profile?</h3>
+      <p>A ZENZO Profile is a decentralized ZFI (ZENZO Forge Item) that allocates a custom, human-readable username to a ZENZO address.<br><br><b style="opacity: 0.4;">(Creating a profile will 'lock' 10 ZNZ)</b></p>
+      <br>
+      <div id="profile_preview">
+        <p>Profile Preview</p>
+        <div class="profile_border" style="margin-top: 5px;">
+          <b id="new_profile_name">Zentoshi Zakamoto</b>
+          <div id="new_profile_avatar">
+            <div class="avatar_border" style="background-image: url('./gui/forge_unknown.png'); margin-left: auto; margin-right: auto;"></div>
+          </div>
+        </div>
+      </div>
+      <div id="profile_designer_warning"></div>
+      <input class="address_input" id="new_username" type="text" placeholder="Username (E.g: Zentoshi Zakamoto)" style="text-align: center; width: 250px;"><br>
+      <input class="address_input" id="new_avatar" type="text" placeholder="Image (E.g: https://i.imgur.com/yQuXuMa.gif)" style="text-align: center; width: 250px; margin-top: 5px"><br>
+      <button style="margin-top: 25px;" class="btn" onclick="createUsername()">Create Profile</button>
+
+      <script>
+        let user_profile = null;
+
+        async function createUsername() {
+          const newUsername = document.getElementById("new_username").value;
+          const newAvatar = document.getElementById("new_avatar").value;
+          let isUsernameFree = getProfile(newUsername, true);
+          if (isUsernameFree === null) {
+            try {
+              let createdUser = await superagent
+                .post("http://127.0.0.1:" + forgePort + "/forge/create")
+                .send({name: "zenzo." + newUsername, image: newAvatar, amount: 10, auth: authToken});
+              user_profile = createdUser.body;
+              loadProfile();
+              openProfile();
+            } catch (e) {
+              setWarning("profile_designer_warning", "Profile creation failure...");
+              console.error("Profile creation error: " + e);
+            }
+          } else {
+            console.warn("Profile creation rejected, username already taken");
+          }
+        }
+      </script>
+    </div>
+    <div id="profile" style="height: 100vh; background-color: white; margin-left: 160px; display: none; text-align: center;">
+      <h1 class="border" style="text-align: center;font-family: helvetica;margin-top: 0;margin-top: 25px;">ZENZO Profile</h1>
+      
+    </div>
+  </body>
+</html> 
